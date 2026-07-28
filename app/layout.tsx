@@ -16,9 +16,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "Площадка обратной связи для финальных питчингов Школы городских продюсеров.",
       type: "website",
       locale: "ru_RU",
-      images: [{ url: "/og-feedback.png", width: 1536, height: 1024, alt: "Участники делятся поддержкой после финальных питчингов" }],
+      images: [{ url: "/city-university-brand.png", width: 3840, height: 2160, alt: "Городской университет 2.0 — формируем будущее городов" }],
     },
-    twitter: { card: "summary_large_image", images: ["/og-feedback.png"] },
+    twitter: { card: "summary_large_image", images: ["/city-university-brand.png"] },
   };
 }
 
