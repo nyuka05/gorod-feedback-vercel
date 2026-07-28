@@ -82,7 +82,7 @@ export default function WritePage() {
             </label>
             <fieldset className="likes-field">
               <legend>Сколько лайков поставить? <b>*</b></legend>
-              <div className="likes-row">{Array.from({ length: 10 }, (_, index) => index + 1).map((value) => <button type="button" key={value} className={likes === value ? "selected" : ""} onClick={() => setLikes(value)} aria-pressed={likes === value}>{value}</button>)}</div>
+              <div className="likes-row" role="radiogroup" aria-label="Количество лайков">{Array.from({ length: 10 }, (_, index) => index + 1).map((value) => <button type="button" key={value} className={likes >= value ? "selected" : ""} onClick={() => setLikes(value)} role="radio" aria-checked={likes === value} aria-label={`${value} из 10`}><span className="rating-heart" aria-hidden>♥</span><small>{value}</small></button>)}</div>
               <div className="likes-caption"><span>Немного поддержки</span><strong><span aria-hidden>♥</span> {likes}</strong><span>В самое сердце</span></div>
             </fieldset>
             <label className="field">
