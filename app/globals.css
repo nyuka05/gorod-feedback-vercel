@@ -221,6 +221,7 @@ body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-i
 .site-header.compact { background: rgba(6, 7, 22, .94); border-bottom-color: rgba(202,255,98,.18); }
 .brand-mark { width: 70px; height: 48px; border-radius: 0; background: var(--violet); color: white; border: 2px solid #0a0b1c; box-shadow: 6px 5px 0 var(--gold); clip-path: polygon(0 0, 92% 0, 100% 18%, 100% 100%, 8% 100%, 0 82%); }
 .brand-mark span { color: var(--gold); }.brand-copy { color: white; text-transform: uppercase; font-size: 11px; letter-spacing: .035em; }
+.brand-logo { display: block; width: 205px; height: auto; }
 .status-pill { color: white; background: #111329; border-color: rgba(202,255,98,.35); border-radius: 4px; text-transform: uppercase; letter-spacing: .06em; }
 .status-dot { background: var(--gold); box-shadow: 0 0 0 4px rgba(202,255,98,.12), 0 0 16px rgba(202,255,98,.65); }
 
@@ -265,6 +266,7 @@ body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-i
 .import-button, .admin-list, .result-summary > div, .results-table, .settings-card, .admin-login { border-radius: 3px; background: #111329; border-color: rgba(149,53,246,.4); color: white; }.import-button:hover { border-color: var(--gold); color: var(--gold); }.quick-add { border-radius: 3px; background: #151733; border-color: rgba(202,255,98,.2); }.quick-add input, .admin-row input { border-radius: 2px; background: #090b20; color: white; border-color: rgba(155,63,247,.25); }.quick-add button { border-radius: 2px; background: var(--gold); color: #080a1d; }.admin-row-head { background: #171936; color: #a6a5b6; }.admin-row, .admin-row-head { border-bottom-color: rgba(151,68,240,.22); }.photo-button, .row-actions button { border-radius: 2px; background: #222544; color: white; }.row-actions .danger-link { color: #e7bcff; }.result-summary strong, .result-row > em { color: var(--gold); }.results-head { background: var(--violet); }.big-switch { border-radius: 3px; background: #252744; color: white; }.big-switch.on { background: var(--gold); color: #080a1d; }.danger-zone { border-color: rgba(189,71,255,.45); }.danger-button { border-radius: 3px; background: #4b1e57; color: #f0d3ff; }.admin-login { background: linear-gradient(rgba(12,13,37,.93), rgba(12,13,37,.97)), url("/shgp-brand.png") center / cover no-repeat; box-shadow: 16px 16px 0 rgba(123,28,220,.48); }
 
 @media (max-width: 620px) {
+  .brand-logo { width: 158px; }
   .hero { width: min(100% - 20px, 1220px); min-height: 0; margin-top: 10px; padding: 45px 22px 58px; clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px)); }
   .hero h1 { font-size: 44px; }.hero-note { width: 150px; box-shadow: 10px 10px 0 var(--violet); }
   .likes-row { grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 0; }.likes-row button { min-height: 58px; }.rating-heart { font-size: clamp(20px, 7vw, 27px); }
