@@ -1,21 +1,21 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Avatar } from "@/components/Avatar";
 import { SiteHeader } from "@/components/SiteHeader";
 import type { Participant, Sender } from "@/lib/types";
 
 export default function WritePage() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [senders, setSenders] = useState<Sender[]>([]);
   const [accepting, setAccepting] = useState(true);
   const [sender, setSender] = useState("");
   const [likes, setLikes] = useState(1);
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState<"loading" | "ready" | "sending" | "success">("loading");
+  const [status, setStatus] = useState<"loading" | "ready" | "sending">("loading");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function WritePage() {
       setStatus("ready");
       return;
     }
-    setStatus("success");
+    router.push(`/wall/${params.id}`);
   }
 
   if (status === "loading") return <><SiteHeader /><div className="shell narrow state-card page-state">Открываем форму…</div></>;
@@ -54,29 +54,20 @@ export default function WritePage() {
 
   return (
     <main>
-      <SiteHeader accepting={accepting} compact />
+      <SiteHeader compact />
       <section className="shell narrow form-page">
         <Link className="back-link" href="/">← Все участники</Link>
         <div className="recipient-panel">
-          <Avatar name={recipient.fullName} src={recipient.photoUrl} size="medium" />
           <div><span>Сообщение для</span><h1>{recipient.fullName}</h1><p>{recipient.project}</p></div>
         </div>
-        {status === "success" ? (
-          <div className="success-card">
-            <div className="success-icon" aria-hidden>🙌</div><span className="eyebrow">Готово</span>
-            <h2>Успешно отправлено!</h2>
-            <p>Спасибо за поддержку коллег. Если отправите отзыв ещё раз от того же имени, он обновится.</p>
-            <div className="success-actions"><Link className="button primary" href="/">Вернуться к участникам</Link><Link className="button secondary" href={`/wall/${recipient.id}`}>Открыть доску</Link></div>
-          </div>
-        ) : (
-          <form className="feedback-form" onSubmit={submit}>
+        <form className="feedback-form" onSubmit={submit}>
             {!accepting && <div className="form-alert">Приём сообщений завершён. Доски участников остаются доступными.</div>}
             <label className="field">
               <span>От кого <b>*</b></span>
               <select value={sender} onChange={(event) => setSender(event.target.value)} required>
                 <option value="">Выберите своё имя</option>
                 <optgroup label="Участники">{senders.filter((item) => item.type === "participant").map((item) => <option key={`${item.type}:${item.id}`} value={`${item.type}:${item.id}`}>{item.label}</option>)}</optgroup>
-                <optgroup label="Команда Школы">{senders.filter((item) => item.type === "organizer").map((item) => <option key={`${item.type}:${item.id}`} value={`${item.type}:${item.id}`}>{item.label}</option>)}</optgroup>
+                <optgroup label="Команда ШГП">{senders.filter((item) => item.type === "organizer").map((item) => <option key={`${item.type}:${item.id}`} value={`${item.type}:${item.id}`}>{item.label}</option>)}</optgroup>
               </select>
               <small>Выбор своего имени — организационное правило.</small>
             </label>
@@ -92,8 +83,7 @@ export default function WritePage() {
             </label>
             {error && <div className="form-error">{error}</div>}
             <button className="button primary submit-button" disabled={!accepting || status === "sending"}>{status === "sending" ? "Отправляем…" : "Отправить поддержку"}</button>
-          </form>
-        )}
+        </form>
       </section>
     </main>
   );

@@ -1,6 +1,6 @@
 # Локальный запуск Vercel-версии
 
-Локально запускается тот же стандартный Next.js-проект, который публикуется на Vercel. Голоса и сообщения при этом всё равно записываются в Turso, а фотографии — в Vercel Blob, поэтому компьютеру нужен доступ в интернет.
+Локально запускается тот же стандартный Next.js-проект, который публикуется на Vercel. Голоса и сообщения при этом всё равно записываются в Turso, поэтому компьютеру нужен доступ в интернет.
 
 ## Подготовка
 
@@ -14,7 +14,7 @@ pnpm dlx vercel env pull .env.local
 pnpm db:migrate
 ```
 
-3. Убедитесь, что `.env.local` содержит `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `BLOB_READ_WRITE_TOKEN`, `ADMIN_PASSWORD` и `ADMIN_SESSION_SECRET`. Не передавайте этот файл другим людям.
+3. Убедитесь, что `.env.local` содержит `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `ADMIN_PASSWORD` и `ADMIN_SESSION_SECRET`. Не передавайте этот файл другим людям.
 
 ## Запуск
 

@@ -8,7 +8,7 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
   const { id } = await context.params;
   const db = getDatabase();
   const participant = await db.prepare(`
-    SELECT p.id, p.full_name AS fullName, p.project, p.photo_key AS photoKey,
+    SELECT p.id, p.full_name AS fullName, p.project,
            COALESCE(SUM(f.likes), 0) AS totalLikes
     FROM participants p
     LEFT JOIN feedback f ON f.recipient_id = p.id
@@ -33,7 +33,6 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
       id: participant.id,
       fullName: participant.fullName,
       project: participant.project,
-      photoUrl: participant.photoKey ? `/api/photos/${participant.id}` : null,
       totalLikes: Number(participant.totalLikes),
     },
     messages: messages.results,

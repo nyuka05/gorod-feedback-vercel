@@ -49,19 +49,6 @@ function ParticipantRow({ participant, onChanged }: { participant: AdminParticip
     }
   }
 
-  async function uploadPhoto(file?: File) {
-    if (!file) return;
-    setBusy(true);
-    const form = new FormData();
-    form.append("file", file);
-    try {
-      await api(`/api/admin/participants/${encodeURIComponent(item.id)}/photo`, { method: "PUT", body: form });
-      onChanged();
-    } finally {
-      setBusy(false);
-    }
-  }
-
   return (
     <div className={`admin-row participant-admin-row ${item.isActive ? "" : "is-muted"}`}>
       <div className="admin-id">{item.id}</div>
@@ -69,7 +56,6 @@ function ParticipantRow({ participant, onChanged }: { participant: AdminParticip
       <input aria-label="Название проекта" value={item.project} onChange={(event) => setItem({ ...item, project: event.target.value })} />
       <input className="order-input" aria-label="Порядок" type="number" value={item.sortOrder} onChange={(event) => setItem({ ...item, sortOrder: Number(event.target.value) })} />
       <label className="compact-toggle"><input type="checkbox" checked={item.isActive} onChange={(event) => setItem({ ...item, isActive: event.target.checked })} /><span>Активен</span></label>
-      <label className="photo-button">Фото<input type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => uploadPhoto(event.target.files?.[0])} /></label>
       <div className="row-actions"><button type="button" onClick={save} disabled={busy}>Сохранить</button><button className="danger-link" type="button" onClick={remove} disabled={busy}>Удалить</button></div>
     </div>
   );
@@ -99,7 +85,7 @@ function OrganizerRow({ organizer, onChanged }: { organizer: AdminOrganizer; onC
   return (
     <div className={`admin-row organizer-admin-row ${item.isActive ? "" : "is-muted"}`}>
       <div className="admin-id">{item.id}</div>
-      <input aria-label="ФИ организатора" value={item.fullName} onChange={(event) => setItem({ ...item, fullName: event.target.value })} />
+      <input aria-label="Роль или имя представителя Команды ШГП" value={item.fullName} onChange={(event) => setItem({ ...item, fullName: event.target.value })} />
       <label className="compact-toggle"><input type="checkbox" checked={item.isActive} onChange={(event) => setItem({ ...item, isActive: event.target.checked })} /><span>Активен</span></label>
       <div className="row-actions"><button type="button" onClick={save} disabled={busy}>Сохранить</button><button className="danger-link" type="button" onClick={remove} disabled={busy}>Удалить</button></div>
     </div>
@@ -222,7 +208,7 @@ export default function AdminPage() {
     <main className="admin-page">
       <header className="admin-header">
         <Link className="brand" href="/"><span className="brand-mark">ГУ</span><span>Панель организатора</span></Link>
-        <div className={`accepting-badge ${dashboard?.acceptingFeedback ? "open" : "closed"}`}>{dashboard?.acceptingFeedback ? "Приём открыт" : "Приём закрыт"}</div>
+        <div className={`accepting-badge ${dashboard?.acceptingFeedback ? "open" : "closed"}`}>{dashboard?.acceptingFeedback ? "Голосование включено" : "Голосование выключено"}</div>
         <button className="text-button" type="button" onClick={logout}>Выйти</button>
       </header>
       <div className="admin-shell">
@@ -246,15 +232,15 @@ export default function AdminPage() {
               <button disabled={busy}>+ Добавить</button>
             </form>
             <div className="admin-list">
-              <div className="admin-row-head participant-admin-row"><span>ID</span><span>Фамилия и имя</span><span>Проект</span><span>№</span><span>Статус</span><span>Фото</span><span>Действия</span></div>
+              <div className="admin-row-head participant-admin-row"><span>ID</span><span>Фамилия и имя</span><span>Проект</span><span>№</span><span>Статус</span><span>Действия</span></div>
               {dashboard.participants.map((participant) => <ParticipantRow key={participant.id} participant={participant} onChanged={loadDashboard} />)}
             </div>
 
-            <div className="admin-title subsection"><div><p className="eyebrow">Несколько независимых отправителей</p><h2>Организаторы</h2></div><label className="import-button">Импорт списка<input type="file" accept=".xlsx,.xls,.csv" onChange={(event) => importFile(event.target.files?.[0], "organizers")} /></label></div>
-            <p className="admin-help">Каждый организатор отправляет и редактирует собственный отзыв — сообщения друг друга не перезаписываются.</p>
+            <div className="admin-title subsection"><div><p className="eyebrow">Несколько независимых отправителей</p><h2>Команда ШГП</h2></div><label className="import-button">Импорт списка<input type="file" accept=".xlsx,.xls,.csv" onChange={(event) => importFile(event.target.files?.[0], "organizers")} /></label></div>
+            <p className="admin-help">Трекер, организатор и методист отправляют и редактируют собственные отзывы — сообщения друг друга не перезаписываются.</p>
             <form className="quick-add organizer-add" onSubmit={addOrganizer}>
               <input placeholder="ID (можно оставить пустым)" value={organizerDraft.id} onChange={(event) => setOrganizerDraft({ ...organizerDraft, id: event.target.value })} />
-              <input required placeholder="Фамилия и имя" value={organizerDraft.fullName} onChange={(event) => setOrganizerDraft({ ...organizerDraft, fullName: event.target.value })} />
+              <input required placeholder="Роль или имя" value={organizerDraft.fullName} onChange={(event) => setOrganizerDraft({ ...organizerDraft, fullName: event.target.value })} />
               <button disabled={busy}>+ Добавить</button>
             </form>
             <div className="admin-list">
@@ -274,7 +260,7 @@ export default function AdminPage() {
           {dashboard && tab === "settings" && <>
             <div className="admin-title"><div><p className="eyebrow">Управление площадкой</p><h1>Настройки</h1></div></div>
             <div className="settings-card"><div><h2>Приём обратной связи</h2><p>После закрытия уже опубликованные стены и суммы лайков останутся видимыми, но форма отправки станет недоступна.</p></div><button className={`big-switch ${dashboard.acceptingFeedback ? "on" : ""}`} type="button" role="switch" aria-checked={dashboard.acceptingFeedback} onClick={toggleAccepting}><span />{dashboard.acceptingFeedback ? "Открыт" : "Закрыт"}</button></div>
-            <div className="settings-card danger-zone"><div><h2>Сбросить тестовые данные</h2><p>Удаляет все оценки и сообщения. Состав участников, организаторов и фотографии сохраняются.</p></div><button className="danger-button" type="button" onClick={resetFeedback}>Удалить отзывы</button></div>
+            <div className="settings-card danger-zone"><div><h2>Сбросить тестовые данные</h2><p>Удаляет все оценки и сообщения. Состав участников и Команды ШГП сохраняется.</p></div><button className="danger-button" type="button" onClick={resetFeedback}>Удалить отзывы</button></div>
           </>}
         </section>
       </div>

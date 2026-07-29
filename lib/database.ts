@@ -23,9 +23,9 @@ const participantSeeds = [
 ] as const;
 
 const organizerSeeds = [
-  ["o01", "Александра Миронова"],
-  ["o02", "Кирилл Ефремов"],
-  ["o03", "Людмила Савина"],
+  ["o01", "Трекер"],
+  ["o02", "Организатор"],
+  ["o03", "Методист"],
 ] as const;
 
 let initialization: Promise<void> | null = null;
@@ -70,6 +70,9 @@ async function initialize() {
       value TEXT NOT NULL
     )`),
     db.prepare("CREATE INDEX IF NOT EXISTS feedback_recipient_idx ON feedback(recipient_id, created_at)"),
+    db.prepare("UPDATE organizers SET full_name = 'Трекер' WHERE id = 'o01' AND full_name = 'Александра Миронова'"),
+    db.prepare("UPDATE organizers SET full_name = 'Организатор' WHERE id = 'o02' AND full_name = 'Кирилл Ефремов'"),
+    db.prepare("UPDATE organizers SET full_name = 'Методист' WHERE id = 'o03' AND full_name = 'Людмила Савина'"),
   ]);
 
   const count = await db.prepare("SELECT COUNT(*) AS count FROM participants").first<{ count: number }>();

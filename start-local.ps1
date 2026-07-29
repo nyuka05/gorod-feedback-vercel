@@ -22,7 +22,7 @@ if (-not (Test-Path ".env.local")) {
 }
 
 $environmentText = Get-Content -Raw ".env.local"
-$requiredNames = @("TURSO_DATABASE_URL", "TURSO_AUTH_TOKEN", "BLOB_READ_WRITE_TOKEN", "ADMIN_PASSWORD", "ADMIN_SESSION_SECRET")
+$requiredNames = @("TURSO_DATABASE_URL", "TURSO_AUTH_TOKEN", "ADMIN_PASSWORD", "ADMIN_SESSION_SECRET")
 $missingNames = $requiredNames | Where-Object { $environmentText -notmatch "(?m)^$($_)=" }
 if ($missingNames.Count -gt 0) {
   Write-Host ("В .env.local отсутствуют переменные: " + ($missingNames -join ", ")) -ForegroundColor Red

@@ -7,7 +7,7 @@ export async function GET() {
   await ensureDatabase();
   const db = getDatabase();
   const participants = await db.prepare(`
-    SELECT p.id, p.full_name AS fullName, p.project, p.photo_key AS photoKey,
+    SELECT p.id, p.full_name AS fullName, p.project,
            p.sort_order AS sortOrder, p.is_active AS isActive,
            COALESCE(SUM(f.likes), 0) AS totalLikes
     FROM participants p
@@ -29,7 +29,6 @@ export async function GET() {
       id: row.id,
       fullName: row.fullName,
       project: row.project,
-      photoUrl: row.photoKey ? `/api/photos/${row.id}` : null,
       sortOrder: Number(row.sortOrder),
       isActive: Boolean(row.isActive),
       totalLikes: Number(row.totalLikes),
@@ -45,7 +44,7 @@ export async function GET() {
         id: row.id,
         fullName: row.fullName,
         type: "organizer",
-        label: `${row.fullName} · Команда Школы`,
+        label: row.fullName,
       })),
     ],
   });

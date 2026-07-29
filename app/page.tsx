@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Avatar } from "@/components/Avatar";
 import { SiteHeader } from "@/components/SiteHeader";
 import type { Participant } from "@/lib/types";
 
@@ -28,7 +27,7 @@ export default function Home() {
 
   return (
     <main>
-      <SiteHeader accepting={accepting} />
+      <SiteHeader />
       <section className="hero shell">
         <div className="hero-copy">
           <span className="eyebrow">Финальные питчинги</span>
@@ -56,7 +55,6 @@ export default function Home() {
                   <span className="card-number">{String(index + 1).padStart(2, "0")}</span>
                   <span className="likes-badge"><span aria-hidden>♥</span> {participant.totalLikes}</span>
                 </div>
-                <Avatar name={participant.fullName} src={participant.photoUrl} size="large" seed={index} />
                 <div className="participant-copy"><h3>{participant.fullName}</h3><p>{participant.project}</p></div>
                 <div className="card-actions">
                   <Link className={`button primary ${accepting ? "" : "disabled"}`} href={`/write/${participant.id}`} aria-disabled={!accepting}>Написать</Link>

@@ -4,7 +4,6 @@ export interface Participant {
   id: string;
   fullName: string;
   project: string;
-  photoUrl: string | null;
   sortOrder: number;
   isActive: boolean;
   totalLikes: number;
@@ -30,7 +29,6 @@ export interface AdminParticipant {
   id: string;
   fullName: string;
   project: string;
-  photoUrl: string | null;
   sortOrder: number;
   isActive: boolean;
 }
