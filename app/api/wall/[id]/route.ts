@@ -1,4 +1,4 @@
-import { getD1 } from "@/db";
+import { getDatabase } from "@/db";
 import { ensureDatabase } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export async function GET(_request: Request, context: { params: Promise<{ id: string }> }) {
   await ensureDatabase();
   const { id } = await context.params;
-  const db = getD1();
+  const db = getDatabase();
   const participant = await db.prepare(`
     SELECT p.id, p.full_name AS fullName, p.project, p.photo_key AS photoKey,
            COALESCE(SUM(f.likes), 0) AS totalLikes

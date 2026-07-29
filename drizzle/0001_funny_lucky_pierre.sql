@@ -1,0 +1,1 @@
+CREATE INDEX `feedback_recipient_idx` ON `feedback` (`recipient_id`,`created_at`);

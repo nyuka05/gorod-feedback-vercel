@@ -1,4 +1,4 @@
-import { getD1 } from "@/db";
+import { getDatabase } from "@/db";
 import { cleanText, ensureDatabase, isAcceptingFeedback } from "@/lib/database";
 
 export async function PUT(request: Request) {
@@ -7,7 +7,7 @@ export async function PUT(request: Request) {
     return Response.json({ error: "Приём сообщений завершён" }, { status: 409 });
   }
 
-  const body = await request.json<Record<string, unknown>>().catch(() => ({}));
+  const body = await request.json().catch(() => ({})) as Record<string, unknown>;
   const senderType = body.senderType === "organizer" ? "organizer" : body.senderType === "participant" ? "participant" : null;
   const senderId = cleanText(body.senderId, 48);
   const recipientId = cleanText(body.recipientId, 48);
@@ -17,7 +17,7 @@ export async function PUT(request: Request) {
     return Response.json({ error: "Проверьте отправителя и количество лайков" }, { status: 400 });
   }
 
-  const db = getD1();
+  const db = getDatabase();
   const senderTable = senderType === "organizer" ? "organizers" : "participants";
   const [sender, recipient] = await Promise.all([
     db.prepare(`SELECT id FROM ${senderTable} WHERE id = ? AND is_active = 1`).bind(senderId).first(),

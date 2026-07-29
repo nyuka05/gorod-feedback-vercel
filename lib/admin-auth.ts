@@ -1,5 +1,3 @@
-import { env } from "cloudflare:workers";
-
 const COOKIE_NAME = "school_admin";
 const WEEK = 60 * 60 * 24 * 7;
 
@@ -9,15 +7,12 @@ type Secrets = {
 };
 
 function getSecrets(request: Request): Secrets {
-  const bindings = env as unknown as {
-    ADMIN_PASSWORD?: string;
-    ADMIN_SESSION_SECRET?: string;
-  };
   const hostname = new URL(request.url).hostname;
   const isLocal = hostname === "localhost" || hostname === "127.0.0.1";
+  const allowLocalDefaults = process.env.NODE_ENV !== "production" && isLocal;
   return {
-    password: bindings.ADMIN_PASSWORD || (isLocal ? "admin" : null),
-    sessionSecret: bindings.ADMIN_SESSION_SECRET || (isLocal ? "local-development-secret" : null),
+    password: process.env.ADMIN_PASSWORD || (allowLocalDefaults ? "admin" : null),
+    sessionSecret: process.env.ADMIN_SESSION_SECRET || (allowLocalDefaults ? "local-development-secret" : null),
   };
 }
 

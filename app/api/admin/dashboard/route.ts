@@ -1,4 +1,4 @@
-import { getD1 } from "@/db";
+import { getDatabase } from "@/db";
 import { requireAdmin } from "@/lib/admin-auth";
 import { ensureDatabase, isAcceptingFeedback } from "@/lib/database";
 
@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const denied = await requireAdmin(request);
   if (denied) return denied;
   await ensureDatabase();
-  const db = getD1();
+  const db = getDatabase();
   const [participants, organizers, results] = await Promise.all([
     db.prepare("SELECT id, full_name AS fullName, project, photo_key AS photoKey, sort_order AS sortOrder, is_active AS isActive FROM participants ORDER BY sort_order, full_name").all(),
     db.prepare("SELECT id, full_name AS fullName, is_active AS isActive FROM organizers ORDER BY full_name").all(),

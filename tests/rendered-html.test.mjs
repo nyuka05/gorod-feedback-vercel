@@ -27,13 +27,15 @@ test("public experience exposes live totals, writing and message walls", async (
 });
 
 test("admin minimum scope is implemented", async () => {
-  const [admin, dashboard, settings, reset, exported, hosting] = await Promise.all([
+  const [admin, dashboard, settings, reset, exported, database, photoUpload, packageJson] = await Promise.all([
     source("app/admin/page.tsx"),
     source("app/api/admin/dashboard/route.ts"),
     source("app/api/admin/settings/route.ts"),
     source("app/api/admin/reset/route.ts"),
     source("app/api/admin/export/route.ts"),
-    source(".openai/hosting.json"),
+    source("db/index.ts"),
+    source("app/api/admin/participants/[id]/photo/route.ts"),
+    source("package.json"),
   ]);
 
   assert.match(admin, /Импорт Excel \/ CSV/);
@@ -43,7 +45,9 @@ test("admin minimum scope is implemented", async () => {
   assert.match(settings, /accepting_feedback/);
   assert.match(reset, /DELETE FROM feedback/);
   assert.match(exported, /created_at AS createdAt/);
-  assert.equal(JSON.parse(hosting).d1, "DB");
-  assert.equal(JSON.parse(hosting).r2, "UPLOADS");
-  assert.match(JSON.parse(hosting).project_id, /^appgprj_/);
+  assert.match(database, /TURSO_DATABASE_URL/);
+  assert.match(database, /@libsql\/client/);
+  assert.match(photoUpload, /@vercel\/blob/);
+  assert.match(photoUpload, /MAX_PHOTO_BYTES = 4 \* 1024 \* 1024/);
+  assert.equal(JSON.parse(packageJson).scripts.build, "next build");
 });

@@ -1,4 +1,4 @@
-import { getD1 } from "@/db";
+import { getDatabase } from "@/db";
 import { requireAdmin } from "@/lib/admin-auth";
 import { cleanText, ensureDatabase, normalizeId } from "@/lib/database";
 
@@ -7,10 +7,10 @@ type ImportRow = Record<string, unknown>;
 export async function POST(request: Request) {
   const denied = await requireAdmin(request); if (denied) return denied;
   await ensureDatabase();
-  const body = await request.json<{ participants?: ImportRow[]; organizers?: ImportRow[] }>();
-  const db = getD1();
+  const body = await request.json() as { participants?: ImportRow[]; organizers?: ImportRow[] };
+  const db = getDatabase();
   const now = new Date().toISOString();
-  const statements: D1PreparedStatement[] = [];
+  const statements: ReturnType<typeof db.prepare>[] = [];
   for (const [index, row] of (body.participants ?? []).entries()) {
     const fullName = cleanText(row.fullName ?? row.name ?? row["ФИ"], 120);
     const project = cleanText(row.project ?? row["Проект"] ?? row["Название проекта"], 180);

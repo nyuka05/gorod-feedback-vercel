@@ -1,4 +1,4 @@
-import { getD1 } from "@/db";
+import { getDatabase } from "@/db";
 
 const participantSeeds = [
   ["p01", "Анна Волкова", "Двор как гостиная"],
@@ -37,7 +37,7 @@ export async function ensureDatabase() {
 }
 
 async function initialize() {
-  const db = getD1();
+  const db = getDatabase();
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS participants (
       id TEXT PRIMARY KEY,
@@ -96,7 +96,7 @@ async function initialize() {
 
 export async function isAcceptingFeedback() {
   await ensureDatabase();
-  const row = await getD1()
+  const row = await getDatabase()
     .prepare("SELECT value FROM settings WHERE key = 'accepting_feedback'")
     .first<{ value: string }>();
   return row?.value !== "false";

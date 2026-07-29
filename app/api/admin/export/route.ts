@@ -1,4 +1,4 @@
-import { getD1 } from "@/db";
+import { getDatabase } from "@/db";
 import { requireAdmin } from "@/lib/admin-auth";
 import { ensureDatabase } from "@/lib/database";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const denied = await requireAdmin(request); if (denied) return denied;
   await ensureDatabase();
-  const db = getD1();
+  const db = getDatabase();
   const [results, messages] = await Promise.all([
     db.prepare(`
       SELECT p.id, p.full_name AS participant, p.project,

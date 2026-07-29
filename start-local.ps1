@@ -2,42 +2,48 @@ $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
-  Write-Host "Node.js was not found. Install Node.js 22.13 or newer: https://nodejs.org/" -ForegroundColor Red
+  Write-Host "Node.js не найден. Установите Node.js 22.13 или новее: https://nodejs.org/" -ForegroundColor Red
   exit 1
 }
 
 if (-not (Get-Command pnpm -ErrorAction SilentlyContinue)) {
-  Write-Host "Enabling pnpm through Corepack..." -ForegroundColor Cyan
+  Write-Host "Включаем pnpm через Corepack..." -ForegroundColor Cyan
   corepack enable
   corepack prepare pnpm@latest --activate
 }
 
 if (-not (Test-Path ".env.local")) {
-  $localPassword = "Admin-" + [guid]::NewGuid().ToString("N").Substring(0, 12)
-  $localSecret = [guid]::NewGuid().ToString("N") + [guid]::NewGuid().ToString("N")
-  @(
-    "ADMIN_PASSWORD=`"$localPassword`""
-    "ADMIN_SESSION_SECRET=`"$localSecret`""
-  ) | Set-Content -Path ".env.local" -Encoding UTF8
-  Write-Host "Local admin password: $localPassword" -ForegroundColor Yellow
-  Write-Host "Save this password now. It will not be printed again." -ForegroundColor Yellow
+  Write-Host "Не найден файл .env.local." -ForegroundColor Red
+  Write-Host "Сначала подключите проект к Vercel и выполните:" -ForegroundColor Yellow
+  Write-Host "  pnpm dlx vercel link"
+  Write-Host "  pnpm dlx vercel env pull .env.local"
+  Write-Host "Подробности находятся в VERCEL_DEPLOYMENT.md."
+  exit 1
 }
 
-Write-Host "Installing dependencies..." -ForegroundColor Cyan
-pnpm install
+$environmentText = Get-Content -Raw ".env.local"
+$requiredNames = @("TURSO_DATABASE_URL", "TURSO_AUTH_TOKEN", "BLOB_READ_WRITE_TOKEN", "ADMIN_PASSWORD", "ADMIN_SESSION_SECRET")
+$missingNames = $requiredNames | Where-Object { $environmentText -notmatch "(?m)^$($_)=" }
+if ($missingNames.Count -gt 0) {
+  Write-Host ("В .env.local отсутствуют переменные: " + ($missingNames -join ", ")) -ForegroundColor Red
+  Write-Host "Добавьте их по инструкции VERCEL_DEPLOYMENT.md."
+  exit 1
+}
+
+Write-Host "Устанавливаем зависимости..." -ForegroundColor Cyan
+pnpm install --frozen-lockfile
 
 $localAddress = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
   Where-Object { $_.IPAddress -notlike "127.*" -and $_.IPAddress -notlike "169.254.*" } |
   Select-Object -First 1 -ExpandProperty IPAddress
 
 Write-Host ""
-Write-Host "This computer: http://localhost:3000" -ForegroundColor Green
+Write-Host "На этом компьютере: http://localhost:3000" -ForegroundColor Green
 if ($localAddress) {
-  $networkUrl = "http://" + $localAddress + ":3000"
-  Write-Host ("Same Wi-Fi network: " + $networkUrl) -ForegroundColor Green
+  Write-Host ("В той же сети Wi-Fi: http://" + $localAddress + ":3000") -ForegroundColor Green
 }
-Write-Host "Admin panel: add /admin to the address." -ForegroundColor Green
-Write-Host "Press Ctrl+C to stop the server." -ForegroundColor DarkGray
+Write-Host "Панель администратора: добавьте /admin к адресу." -ForegroundColor Green
+Write-Host "Для остановки нажмите Ctrl+C." -ForegroundColor DarkGray
 Write-Host ""
 
-pnpm dev -- --host 0.0.0.0 --port 3000
+pnpm dev -- --hostname 0.0.0.0 --port 3000

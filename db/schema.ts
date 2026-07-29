@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { index, integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const participants = sqliteTable("participants", {
   id: text("id").primaryKey(),
@@ -30,6 +30,7 @@ export const feedback = sqliteTable(
     updatedAt: text("updated_at").notNull(),
   },
   (table) => [
+    index("feedback_recipient_idx").on(table.recipientId, table.createdAt),
     uniqueIndex("feedback_sender_recipient_idx").on(
       table.senderType,
       table.senderId,

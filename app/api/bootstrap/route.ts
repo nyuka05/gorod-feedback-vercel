@@ -1,11 +1,11 @@
-import { getD1 } from "@/db";
+import { getDatabase } from "@/db";
 import { ensureDatabase, isAcceptingFeedback } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   await ensureDatabase();
-  const db = getD1();
+  const db = getDatabase();
   const participants = await db.prepare(`
     SELECT p.id, p.full_name AS fullName, p.project, p.photo_key AS photoKey,
            p.sort_order AS sortOrder, p.is_active AS isActive,
