@@ -59,7 +59,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .participant-copy { margin: 30px 0 24px; }
 .participant-copy h3 { margin: 0; font-size: 24px; letter-spacing: -.035em; }
 .participant-copy p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
-.card-actions { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.card-actions { margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.card-actions .button { width: 100%; min-width: 0; padding-inline: 10px; font-size: 13px; }
 .button { min-height: 46px; padding: 11px 17px; border: 0; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 800; font-size: 14px; transition: .18s ease; }
 .button.primary { background: var(--coral); color: white; box-shadow: 0 7px 18px rgba(185,71,53,.17); }
 .button.primary:hover { background: var(--coral-dark); transform: translateY(-1px); }
@@ -127,6 +128,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .recipient-panel { padding: 20px; gap: 16px; }.recipient-panel .avatar { width: 78px; height: 78px; }.recipient-panel h1 { font-size: 30px; }
   .feedback-form { padding: 20px; }.likes-row { grid-template-columns: repeat(5, 1fr); }.likes-row button { min-height: 46px; }.likes-caption span { max-width: 75px; }
   .wall-hero { grid-template-columns: auto 1fr; padding: 22px; }.wall-hero .avatar { width: 92px; height: 92px; }.total-likes { grid-column: 1 / -1; width: 100%; min-width: 0; aspect-ratio: auto; border-radius: 16px; padding: 14px; flex-direction: row; gap: 8px; transform: none; }.total-likes strong { font-size: 26px; }.wall-heading { align-items: stretch; flex-direction: column; }.message-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 360px) {
+  .card-actions { grid-template-columns: 1fr; }
 }
 
 /* Organizer workspace */
