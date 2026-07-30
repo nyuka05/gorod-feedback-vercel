@@ -43,7 +43,7 @@ export default function Home() {
       <section className="shell participants-section">
         <div className="section-heading">
           <div><span className="eyebrow">Участники</span><h2>Выберите выступление</h2></div>
-          <p>Текущие лайки обновляются после перезагрузки</p>
+          <p>Лайки обновляются после перезагрузки</p>
         </div>
         {loading && <div className="state-card">Собираем карточки участников…</div>}
         {error && <div className="state-card error-card">{error}</div>}
